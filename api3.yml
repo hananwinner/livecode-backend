@@ -1,0 +1,72 @@
+openapi: '3.0.2'
+info:
+  title: LiveCode API
+  version: '1.1'
+paths:            
+  /api/livecodes:    
+    post:
+      description: create new livecode
+      requestBody:
+        $ref: "#/components/schemas/LiveCodeExtendedMetadata"
+      responses:
+        '201':
+          description: empty live code tutorial created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LiveCodeExtendedMetadata"
+        '403':
+          description: no access to specified for repo or video
+        '400': 
+          description: video is used in another tutrial,
+            or same forked repo used in another tutorial.  
+components: 
+  schemas:        
+    GitMetadata:
+      type: object
+      properties:
+        repository_url:
+          type: string
+        branch_name:
+          type: string   
+    LiveCodeExtendedMetadata:
+      type: object      
+      required:
+        - "name"
+        - "description"
+        - "git"          
+      properties:  
+        id:
+          readOnly: true
+          type: string
+          format: uuid        
+        git:                      
+          $ref: "#/components/schemas/GitMetadata"    
+        name:
+          type: string
+        description:
+          type: string
+        video_length: 
+          type: integer
+          format: int32
+          default: -1  
+        code_changes:
+          readOnly: true
+          description: an array of code changes, ordered by seconds_elpaseds elapsed number. 
+            The first item will have seconds_elpased elapsed number 0. 
+            on each seconds_elpased where significant code change was recorded, 
+            there will be entry describing that code change.
+          type: array
+          items:
+            properties:
+              commit:
+                type: string
+        video_versions:          
+          readOnly: true
+          description: an array of available video versions.
+            it is possible that no version was created yet.            
+          type: array
+          items: 
+            properties:
+              url:
+                type: string
