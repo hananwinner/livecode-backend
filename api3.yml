@@ -18,8 +18,7 @@ paths:
         '403':
           description: no access to specified for repo or video
         '400': 
-          description: video is used in another tutrial,
-            or same forked repo used in another tutorial.  
+          description: the same repo is used in another tutorial.  
 components: 
   schemas:        
     GitMetadata:
