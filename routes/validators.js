@@ -10,3 +10,5 @@ const LiveCodeExtendedMetadataJoiSchema = Joi.object({
     description: Joi.string().min(3).max(1024).required(),
     git: GitMetadataJoiSchema
 });
+
+module.exports.LiveCodeExtendedMetadataJoiSchema = LiveCodeExtendedMetadataJoiSchema;
