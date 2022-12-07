@@ -23,6 +23,9 @@ components:
   schemas:        
     GitMetadata:
       type: object
+      required:
+        - "repository_url"
+        - "branch_name"
       properties:
         repository_url:
           type: string
