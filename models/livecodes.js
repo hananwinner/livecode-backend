@@ -1,4 +1,3 @@
-const { string } = require('joi');
 const mongoose = require('mongoose');
 
 const GitMetadataSchema = new mongoose.Schema({
@@ -10,9 +9,12 @@ const GitMetadata = mongoose.model('GitMetadata', GitMetadataSchema);
 
 
 const LiveCode = mongoose.model('LiveCode', new mongoose.Schema({
-    name: String,
-    description: String, 
-    git: GitMetadataSchema
+    name: { type: String, required: true, trim: true},
+    description: { type: String, required: true, trim: true},
+    git: {type: GitMetadataSchema, required: true},
+    finalized: {type: Boolean, default: false},
+    video_versions: [],
+    code_changes: []
 }));
 
 module.exports.LiveCode = LiveCode;

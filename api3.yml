@@ -19,6 +19,17 @@ paths:
           description: no access to specified for repo or video
         '400': 
           description: the same repo is used in another tutorial.  
+    get:
+      description: get all livecodes created by me
+      responses:
+        '200':
+          description: list of live code metadata for list view
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LiveCodeThumbnail"
 components: 
   schemas:        
     GitMetadata:
@@ -31,7 +42,7 @@ components:
           type: string
         branch_name:
           type: string   
-    LiveCodeExtendedMetadata:
+    LiveCodeBaseMetadata:
       type: object      
       required:
         - "name"
@@ -52,6 +63,31 @@ components:
           type: integer
           format: int32
           default: -1  
+        finalized:
+          type: boolean
+          default: false
+          readOnly: true
+    LiveCodeThumbnail:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/LiveCodeBaseMetadata"        
+      required:
+        - "name"
+        - "description"
+        - "git"        
+      properties:
+        thumbnail_url:
+          readOnly: true
+          type: string      
+    LiveCodeExtendedMetadata:
+      type: object      
+      allOf:
+        - $ref: "#/components/schemas/LiveCodeBaseMetadata"
+      required:
+        - "name"
+        - "description"
+        - "git"          
+      properties:        
         code_changes:
           readOnly: true
           description: an array of code changes, ordered by seconds_elpaseds elapsed number. 
