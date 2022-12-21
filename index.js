@@ -7,6 +7,7 @@ const debug = require('debug')('app:startup');
 const app = express();
 const livecodes = require('./routes/livecodes');
 const users = require('./routes/users');
+const auth = require('./middleware/auth');
 
 if (!config.get('jwtPrivateKey')) {
     console.error('jwtPrivateKey is not defined');
@@ -20,9 +21,10 @@ mongoose.connect('mongodb://root:example@localhost:27017')
 
 app.use(morgan('tiny'));
 app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 // app.use(express.static('public'));
 app.use(helmet());
+app.use(auth);
 app.use('/api/livecodes', livecodes);
 app.use('/api/users', users);
 app.use(function(err, req, res, next) {

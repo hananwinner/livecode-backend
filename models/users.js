@@ -13,8 +13,6 @@ userSchema.methods.generateAuthToken = function() {
     return jwt.sign({_id: this._id}, config.get('jwtPrivateKey'));
 }
 
-const User = mongoose.model('Users', userSchema);
-
-
+const User = mongoose.model('User', userSchema);
 
 module.exports.User = User;

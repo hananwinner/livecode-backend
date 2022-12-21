@@ -10,17 +10,24 @@ paths:
         $ref: "#/components/schemas/LiveCodeExtendedMetadata"
       responses:
         '201':
-          description: empty live code tutorial created
+          description: empty live code tutorial created, with this author
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/LiveCodeExtendedMetadata"
-        '403':
-          description: no access to specified for repo or video
+                $ref: "#/components/schemas/LiveCodeExtendedMetadata"        
         '400': 
-          description: the same repo is used in another tutorial.  
+          description: invalid parameters (git, name, desc.)  
+        '403':
+          description: Unauthorized (not autheticated)        
     get:
-      description: get all livecodes created by me
+      description: get all livecodes      
+      parameters:
+        - name: authorname
+          schema:
+            type: string
+          in: query                      
+          required: false
+          description: name of the author
       responses:
         '200':
           description: list of live code metadata for list view
@@ -30,6 +37,65 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/LiveCodeThumbnail"
+  /api/livecodes/{livecode_id}:
+    put:
+      description: Update the LiveCodeExtendedMetadata name
+      parameters:
+        - in: path
+          name: livecode_id
+          required: true
+          schema:
+            type: string  
+            format: mongo object-id
+      requestBody:                      
+        $ref: "#/components/schemas/LiveCodeBaseMetadata"
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LiveCodeExtendedMetadata"
+        '404':
+          description: wrong id          
+        '400':
+          description: Git metadata, name, or description is invalid       
+        '403':
+          description: Unauthorized (not yours)
+    delete:
+      description: Delete the livecode.
+      parameters:
+        - in: path
+          name: livecode_id
+          required: true
+          schema:
+            type: string  
+      responses:
+        '204':
+          description: Deleted 
+        '404':
+          description: wrong id    
+        '403':
+          description: Unauthorized (not yours)
+    get: 
+      description: Get the live code data to show
+      parameters:
+        - in: path
+          name: livecode_id
+          schema: 
+            type: string
+          required: true
+      responses:
+        '200':
+          description: succesfully retrived the live code metadata.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LiveCodeExtendedMetadata"
+        '404':
+          description: not found
+        '403':
+          description: Unauthorized (not yours or not published)
 components: 
   schemas:        
     GitMetadata:
@@ -41,13 +107,13 @@ components:
         repository_url:
           type: string
         branch_name:
-          type: string   
+          type: string  
     LiveCodeBaseMetadata:
       type: object      
       required:
         - "name"
         - "description"
-        - "git"          
+        - "git"    
       properties:  
         id:
           readOnly: true
@@ -63,10 +129,13 @@ components:
           type: integer
           format: int32
           default: -1  
+          readOnly: true
         finalized:
           type: boolean
           default: false
-          readOnly: true
+        published:
+          type: boolean 
+          default: false     
     LiveCodeThumbnail:
       type: object
       allOf:
